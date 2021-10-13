@@ -1,0 +1,42 @@
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://ultraq.net.nz/thymeleaf/layout" layout:decorator = "layout/main.html">
+
+
+<div layout:fragment="site_content" >
+
+        <div class="row mt-5">
+            <div class="col-6 offset-3">
+                <form th:action="@{'/checkIn'}" method = "post">
+                    <div class="form-row">
+                        <div class="col">
+                            <label  class="col-form-label">Full Name<span style="color:red;">*</span></label>
+                            <input type="text" class="form-control" name="full_name" >
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label  class="col-form-label">Card Number<span style="color:red;">*</span></label>
+                            <input type="text" class="form-control" name="card_number">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>Expiration(MM/YY)<span style="color:red;">*</span></label>
+                            <input type="text" class="form-control" name="expiration">
+                        </div>
+                        <div class="col">
+                            <label>CVV<span style="color:red;">*</span></label>
+                            <input type="text" class="form-control" name="cvv">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Pay</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+</div>
+
+</html>

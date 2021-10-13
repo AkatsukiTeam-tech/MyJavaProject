@@ -1,0 +1,160 @@
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://ultraq.net.nz/thymeleaf/layout"
+      layout:decorator = "layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<div layout:fragment="site_content" >
+            <div class="col-12 mt-2">
+                <div class="card-desk">
+                    <div class="card mt-3">
+                        <img th:src="${item.largePic}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                                <h6 class="card-title" style="color: #007bff" th:text="${item.name}"></h6>
+                            <h6 class="card-title" th:text="${'$'} + ${item.price}"></h6>
+                            <p class="card-text" th:text="${item.desc}"></p>
+                            <strong style="color: black">BRAND: <a href="#" class="link" th:text="${item.brands.name} + ', ' + ${item.brands.country.name}"></a></strong>
+                            <br>
+                            <br>
+                            <h4 style="text-align: center"  th:text="#{h4.screenshots}"></h4>
+                            <br>
+                            <div class="big-screen">
+                                <img class="img-thumbnail" th:src="@{'/viewPicture/' + ${pictures[0].url}}" style="width: 350px; height: 350px; object-fit: cover; margin: 10px auto 10px; display: block; padding: 0">
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="slides" th:each="p : ${pictures}">
+                                    <img class="img-thumbnail" th:src="@{'/viewPicture/' + ${p.url}}" style="width: 100px; height: 100px; object-fit: cover; padding: 0; margin-left: 10px">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <img style="height: 16px; width: 16px; margin-left: 3px" th:each="i : ${#numbers.sequence(0, item.getStars()-1,1)}"  src="/icons/star2.png" class="card-img-top" alt="...">
+                            <img style="height: 16px; width: 16px; margin-right: 3px" th:each="i : ${#numbers.sequence(0,5 - (item.getStars())-1,1)}"  src="/icons/star.png" class="card-img-top" alt="...">
+                        </div>
+                    </div>
+                    <br>
+                    <a type="button" class="btn btn-success btn-sm" th:href="@{'/addToBasket?item_id='+${item.id}+'&method=none'}" th:text="#{a.addtobusket}"></a>
+                    <br>
+                    <br>
+                    <div class="container" style="padding: 0; margin: 0">
+                        <div class="modal-body" style="padding: 0" sec:authorize="isAuthenticated()">
+                            <form th:action="@{'/addComment'}" method="post">
+                                <div class="form-group">
+                                    <input type="hidden" name="item_id" th:value="${item.id}">
+                                    <input type="hidden" name="user_id" th:value="${user.id}">
+                                </div>
+                                <div class="form-group" style="display: flex">
+                                    <input class="form-control col-11" onkeyup="check();" id="zagol" type="text" name="comment" th:placeholder="#{label.comment}">
+                                    <button class="btn btn-sm ml-3" disabled="disabled" id="zag"><img src="/icons/send.png" style="width: 28px; height: 28px"></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="alert alert-secondary" role="alert" sec:authorize="isAnonymous()">
+                        Please Log in to write a comment!
+                    </div>
+                    <br>
+                    <div class="card mb-2" th:each="c : ${comments}">
+                        <div class="card-body">
+                            <input type="hidden" th:id="${'comment_' + c.id}" th:value="${c.comment}">
+                            <div class="container" style="display: flex; padding-left: 0; padding-right: 0">
+                                <h5 class="card-text col-11 mb-1" style="margin-left: 0; padding-left: 0" th:text="${c.user.full_name}"></h5>
+                                <div class="dropdown" sec:authorize="isAuthenticated()" th:hidden="${c.user.id != user.id}">
+                                    <button class="btn" style="padding: 0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="/icons/more.png" style="width: 20px; height: 20px">
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><button class="dropdown-item" th:data-id="${c.id}" onclick="editComment(this.getAttribute('data-id'))" data-toggle="modal" data-target="#editComment">Edit</button></li>
+                                        <li><button class="dropdown-item" th:data-id="${c.id}" onclick="deleteComment(this.getAttribute('data-id'))" data-toggle="modal" data-target="#deleteComment">Delete</button></li>
+                                    </ul>
+                                </div>
+                                <div class="dropdown" sec:authorize="hasAnyRole('ROLE_MODER', 'ROLE_ADMIN')">
+                                    <button class="btn" style="padding: 0" type="button" id="dropMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="/icons/more.png" style="width: 20px; height: 20px">
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropMenuButton">
+                                        <li><button class="dropdown-item" th:data-id="${c.id}" onclick="deleteComment(this.getAttribute('data-id'))" data-toggle="modal" data-target="#deleteComment">Delete</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="card-text" style="display: block; margin-block-start: 0; margin-block-end: 0; margin-inline-start: 0; margin-inline-end: 0;" th:text="${c.comment}"></p>
+                            <p class="card-text"><small class="text-muted" th:text="${c.date}"></small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="editComment" tabindex="-1" role="dialog" aria-labelledby="editComment" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editCommentLabel">Edit</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{'/editComment'}" method="post">
+                                    <div class="form-group">
+                                        <label  class="col-form-label">Comment</label>
+                                        <input type="text" class="form-control" name="comment" id="comment_">
+                                        <input type="hidden" class="form-control" name="id" id="edit_comment_id">
+                                        <input type="hidden" class="form-control" name="item_id" th:value="${item.id}">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.close}"></button>
+                                        <button type="submit" class="btn btn-primary" th:text="#{button.save}"></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="deleteComment" tabindex="-1" role="dialog" aria-labelledby="deleteComment" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteCommentLabel">Delete</h5>
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form th:action="@{'/deleteComment'}" method="post">
+                                    <div class="form-group">
+                                        <label  class="col-form-label">Are you sure?</label>
+                                        <input type="hidden" class="form-control" name="id" id="comment_id">
+                                        <input type="hidden" class="form-control" name="item_id" th:value="${item.id}">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{button.close}"></button>
+                                        <button type="submit" class="btn btn-danger" th:text="#{button.delete}"></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script type="text/javascript">
+                    $(document).ready(function(){
+                        $('.row .slides > img').click(function(){
+                            var $smallImages = $(this).attr('src');
+                            $('.big-screen > img').attr('src',$smallImages);
+                        });
+                    });
+                </script>
+                <script type="text/javascript">
+                    const editComment = (id) =>{
+                        document.getElementById("edit_comment_id").value = id;
+                        document.getElementById("comment_").value = document.getElementById('comment_' + id).value;
+                    }
+                    const deleteComment = (id) =>{
+                        document.getElementById("comment_id").value = id;
+                    }
+                    function check() {
+                        if ($('#zagol').val() != '')     $('#zag').removeAttr('disabled');   else
+                            $('#zag').attr('disabled','disable'); }
+                </script>
+            </div>
+</div>
+</html>

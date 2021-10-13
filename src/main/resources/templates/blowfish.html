@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <title>DH</title>
+</head>
+<body>
+    <div class="container mt-5" style="text-align: center">
+        <p style="font-size: 32px; font-weight: 500;">DH Decoder</p>
+    </div>
+    <div class="container col-5 mt-5">
+        <form th:action="@{'/blowfish'}" method="post">
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Alice</label>
+                        <input class="form-control" name="word_1" type="number" maxlength="2" placeholder="enter...">
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <label>Bob</label>
+                        <input class="form-control" name="word_2" type="number" maxlength="2" placeholder="enter">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary">Send</button>
+            </div>
+        </form>
+    </div>
+    <div class="container col-5 mt5" style="text-align: center" th:hidden="${Eve==null}">
+        <strong style="font-size: 28px">Eve: </strong><p th:text="${Eve}" style="font-size: 24px; font-weight: 400"></p>
+    </div>
+    <div class="container col-5 mt5" style="text-align: center" th:hidden="${mess==null}">
+        <strong style="font-size: 28px">Result: </strong><p th:text="${mess}" style="font-size: 24px; font-weight: 400"></p>
+    </div>
+</body>
+</html>

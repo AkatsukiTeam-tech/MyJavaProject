@@ -1,0 +1,89 @@
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://ultraq.net.nz/thymeleaf/layout" layout:decorator = "layout/main.html">
+
+
+<div layout:fragment="site_content" >
+            <div class="row">
+                <div class="col-6 offset-3">
+                    <div class="alert alert-success" role="alert" th:hidden="${success_avatar==null}">
+                        <span th:text="${success_avatar}"></span>
+                    </div>
+                    <div class="alert alert-danger" role="alert" th:hidden="${file_error==null}">
+                        <span th:text="${file_error}"></span>
+                    </div>
+                    <style>
+                        .st {border-radius:200px; width:380px; height:380px; overflow:hidden; text-align:center; margin:auto; background-color: black}
+                    </style>
+                    <img th:src="@{'/viewAvatar/' + ${user.picture}}" style="width: 100%; object-fit: cover" class="st">
+                    <form th:action="@{'/editAvatar'}" method="post" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input type="hidden" name="id" th:value="${user.id}">
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customFile" name="picture">
+                                <label class="custom-file-label" for="customFile" th:text="#{button.choose}"></label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success btn-sm" style="background-color: #156145" th:text="#{button.upload}"></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-6 offset-3">
+                    <div class="alert alert-success" role="alert" th:hidden="${success_prof==null}">
+                        <span th:text="${success_prof}"></span>
+                    </div>
+                <form th:action="@{'/editProfile'}" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="id" th:value="${user.id}">
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{label.full_name}"></label>
+                            <input type="text" class="form-control" name="full_name" th:value="${user.full_name}">
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{label.email}"></label>
+                            <input type="email" class="form-control" name="email" th:value="${user.email}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success btn-sm" style="background-color: #156145" th:text="#{button.update}"></button>
+                    </div>
+                </form>
+                </div>
+                <div class="col-6 offset-3">
+                    <div class="alert alert-danger" role="alert" th:hidden="${mess==null}">
+                        <span th:text="${mess}"></span>
+                    </div>
+                    <div class="alert alert-success" role="alert" th:hidden="${success_pass==null}">
+                        <span th:text="${success_pass}"></span>
+                    </div>
+                <form th:action="@{'/editPassword'}" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="id" th:value="${user.id}">
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{label.password}"></label>
+                            <input type="password" class="form-control" name="password" th:placeholder="#{label.password}">
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{label.newPassword}"></label>
+                            <input type="password" class="form-control" name="new_pass" th:placeholder="#{label.newPassword}">
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{label.rePassword}"></label>
+                            <input type="password" class="form-control" name="re_pass" th:placeholder="#{label.rePassword}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success btn-sm" style="background-color: #156145" th:text="#{button.update}"></button>
+                    </div>
+                </form>
+                </div>
+            </div>
+</div>
+
+</html>

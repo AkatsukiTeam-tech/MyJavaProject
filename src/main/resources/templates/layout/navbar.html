@@ -1,0 +1,81 @@
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #156145"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+    <div class="container">
+        <a class="navbar-brand" style="color: white" th:href="@{'/'}"><strong>ALL-IN SHOP</strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="dropdown ml-md-auto">
+            <button class="btn dropdown-toggle" style="color: white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="/icons/translate.png" style="width: 28px; height: 28px">
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="?lan=ru">Rus</a>
+                <a class="dropdown-item" href="?lan=en">Eng</a>
+                <a class="dropdown-item" href="?lan=kz">Kaz</a>
+            </div>
+            <a type="button" data-toggle="modal" data-target="#basket" class="">
+                <img src="/icons/shopping-basket.png" style="width: 28px; height: 28px">
+                <span class="badge" style="color: white; font-size: 90%" th:text="${amount}"></span></a>
+            <a class="mr-2 ml-2" sec:authorize="isAnonymous()" th:href="@{'/login'}" style="text-decoration: none; color: white; font-weight: 500;" th:text="#{a.Login}"></a>
+        </div>
+        <div class="dropdown">
+            <style>
+                .stop {border-radius:200px; width:40px; height:40px; overflow:hidden; text-align:center; margin:auto;}
+            </style>
+            <img sec:authorize="isAuthenticated()" th:src="@{'/viewAvatar/' + ${user.picture}}" style="object-fit: cover" class="stop ml-3 mr-1">
+            <button sec:authorize="isAuthenticated()" style="color: white; font-weight: 500; padding-left: 0" th:text="${user.full_name}"  type="button"  class="btn dropdown-toggle" id="dropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownButton">
+                <a class="dropdown-item" th:href="@{'/profile'}">Profile</a>
+                <a sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_MODER')" class="dropdown-item" th:href="@{'/admin'}">Admin Page</a>
+                <a class="dropdown-item" sec:authorize="isAuthenticated()" href="JavaScript:void(0)" onclick="document.getElementById('logoutId').submit()">Logout</a>
+            </div>
+        </div>
+        <div class="modal fade" id="basket" tabindex="-1" role="dialog" aria-labelledby="basket" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="basketLabel" th:text="#{lable.basket}"></h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td th:text="#{basket.name}"></td>
+                                    <td th:text="#{basket.price}"></td>
+                                    <td th:text="#{basket.amount}"></td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="b : ${session.basket}">
+                                    <td th:text="${b.getItems().name}"></td>
+                                    <td th:text="'$'+${b.getItems().price}"></td>
+                                    <td th:text="${b.amount}"></td>
+                                    <td>
+                                        <a type="button" class="btn btn-success" th:href="@{'/addToBasket?item_id='+${b.id}+'&method=plus'}">+</a>
+                                        <a type="button" class="btn btn-danger" th:href="@{'/addToBasket?item_id='+${b.id}+'&method=minus'}">-</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <p class="mr-md-auto" th:hidden="${session.basket == null}">Total: <strong>$</strong><strong th:text="${sum}"></strong></p>
+                        <a type="button" class="btn btn-secondary btn-sm" th:hidden="${session.basket == null}" th:href="@{'/paymentPage'}"><img src="/icons/credit-card.png" style="width: 32px; height: 32px" th:text="#{basket.sheckin}"></a>
+                        <a type="button" class="btn btn-danger btn-sm" th:hidden="${session.basket == null}" th:href="@{'/addToBasket?item_id='+${7}+'&method=clear'}"><img src="/icons/trash.png" style="width: 32px; height: 32px" th:text="#{basket.clear}"> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form th:action="@{'/logout'}" method="post" id="logoutId" sec:authorize="isAuthenticated()">
+        </form>
+    </div>
+</nav>

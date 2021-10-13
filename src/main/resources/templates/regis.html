@@ -1,0 +1,38 @@
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://ultraq.net.nz/thymeleaf/layout" layout:decorator = "layout/main.html">
+
+
+<div layout:fragment="site_content" >
+
+            <div class="row mt-5">
+                <div class="col-6 offset-3">
+                    <div class="alert alert-danger" role="alert" th:hidden="${mess==null}">
+                        <span th:text="${mess}"></span>
+                    </div>
+                    <form th:action="@{'/regis'}" method="post">
+                        <div class="from-group">
+                            <label th:text="#{label.full_name}"></label>
+                            <input type="text" name="full_name" class="form-control" required>
+                        </div>
+                        <div class="from-group mt-3">
+                            <label th:text="#{label.email}"></label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="from-group mt-3">
+                            <label th:text="#{label.enterpassword}"></label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="from-group mt-3">
+                            <label th:text="#{label.rePassword}"></label>
+                            <input type="password" name="re_password" class="form-control" required>
+                        </div>
+                        <div class="from-group mt-2">
+                            <button class="btn btn-primary btn-sm float-right" th:text="#{button.signup}"></button>
+                            <span th:text="#{span.alterv}"></span><a th:href="@{'/login'}" style="margin-left: 5px" th:text="#{span.alter2}"></a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+</div>
+
+</html>

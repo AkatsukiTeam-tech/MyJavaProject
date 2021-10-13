@@ -1,0 +1,73 @@
+<html xmlns:th = "http://www.thymeleaf.org"
+      xmlns:layout = "http://ultraq.net.nz/thymeleaf/layout" layout:decorator = "layout/main.html">
+
+
+<div layout:fragment="site_content">
+
+            <div class="col-12">
+                <div class="container-fluid">
+                    <form th:action="@{'/sorted'}" method="post">
+                        <div class="row">
+                            <div class="col-3">
+                                <input class="form-control " name="name" type="search" aria-label="Search" placeholder="name">
+                            </div>
+                            <div class="col-2">
+                                <select class="form-control" name="brand_id">
+                                    <option selected="selected" disabled="disabled">brand</option>
+                                    <option th:each="br : ${brands}" th:text="${br.name}" th:value="${br.id}"></option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control" name="price_from" type="number"  aria-label="Search" th:placeholder="#{label.from}">
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control " name="price_to" type="number" aria-label="Search" th:placeholder="#{label.to}">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-success"  type="submit" style="width: 180px; background-color: #156145" th:text="#{button.search}"></button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-9">
+                            </div>
+                            <div class="col-3">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons" style="height:33px;">
+                                    <input class="form-control " name="name"  type="hidden" aria-label="Search">
+                                    <p class="btn btn-secondary active" style="font-size: 13px">
+                                        <input type="radio" name="ascending" value="ascending" checked th:text="#{search.asc}">
+                                    </p>
+                                    <p class="btn btn-secondary"style="font-size: 13px">
+                                        <input type="radio" name="ascending" value="descending" th:text="#{search.desc}">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="row row-cols-1 row-cols-md-3 mt-3">
+                        <div class="col mb-3" th:each="it : ${items}">
+                            <div class="card" >
+                                <img th:src="${it.smallPic}" style="width: 100%; height: 100%" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <a th:href="@{'/details/'+ ${it.id}}" style="font-weight: bolder" class="card-title" th:text="${it.name}">
+                                    </a>
+                                    <h6 style="font-weight: bolder" th:text="'$'+${it.price}"></h6>
+                                    <p class="card-text" style="font-size: 90%" th:text="${it.desc}"></p>
+                                    <strong style="color: black">BRAND: <a th:href="@{'detailsBrand?id='+${it.brands.id}}" class="link" th:text="${it.brands.name} + ', ' + ${it.brands.country.name}"></a></strong>
+
+                                </div>
+                                <div class="card-footer" >
+                                    <img style="height: 16px; width: 16px; margin-left: 3px" th:each="i : ${#numbers.sequence(0, it.getStars() -1,1)}"  src="icons/star2.png" class="card-img-top" alt="...">
+                                    <img style="height: 16px; width: 16px; margin-right: 3px" th:each="i : ${#numbers.sequence(0,5 - it.getStars() -1,1)}"  src="icons/star.png" class="card-img-top" alt="...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+</html>
